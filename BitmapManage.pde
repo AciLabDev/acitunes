@@ -180,7 +180,7 @@ void BitmapBackgroundChecker()
 
 boolean IsCursorOnBitmap()
 {
-  return (mouseX >= GetLeft() && mouseY >= 0 && (mouseX - GetLeft()) < (res_x * scale) && mouseY < (res_y * scale));
+  return (cursorX >= GetLeft() && cursorY >= 0 && (cursorX - GetLeft()) < (res_x * scale) && cursorY < (res_y * scale));
 }
 
 void BitmapInput()
@@ -210,7 +210,7 @@ void BitmapInput()
     {
       img.stroke(pal[pal.length - 1]);
     }
-    img.line(((mouseX - GetLeft()) - (scale / 2)) / scale, (mouseY - (scale / 2)) / scale, ((pmouseX - GetLeft()) - (scale / 2)) / scale, (pmouseY - (scale / 2)) / scale);
+    img.line(((cursorX - GetLeft()) - (scale / 2)) / scale, (cursorY - (scale / 2)) / scale, ((cursorpX - GetLeft()) - (scale / 2)) / scale, (cursorpY - (scale / 2)) / scale);
     img.loadPixels();
     //Make sure to make black pixels transparent (not really optimized)
     for (int i = 0; i < (res_x * res_y); i++)
@@ -219,57 +219,4 @@ void BitmapInput()
     img.updatePixels();
   }
   img.endDraw();
-}
-
-void ColorManage()
-{
-  //Color Select
-  for (int i = 0; i < pal.length; i++)
-  {
-    noStroke();
-    fill(pal[i]);
-    rect(GetLeft() + 20 + i * 20, (res_y * scale) + 5, 15, 30);
-    if (curcolor_id == i)
-    {
-      noFill();
-      stroke(255);
-      strokeWeight(3);
-      rect(GetLeft() + 20 + i * 20, (res_y * scale) + 5, 15, 30);
-      strokeWeight(1);
-    }
-  }
-  
-  for (int i = 0; i < pal.length - 1; i++)
-  {
-    noStroke();
-    fill(pal[i]);
-    rect(GetLeft() + 20 + pal.length * 20, (res_y * scale) + 5 + (i * 2), 15, 2);
-  }
-  if (curcolor_id == pal.length)
-  {
-    noFill();
-    stroke(255);
-    strokeWeight(3);
-    rect(GetLeft() + 20 + pal.length * 20, (res_y * scale) + 5, 15, 30);
-    strokeWeight(1);
-  }
-}
-
-void ColorInput()
-{
-  if (mouseButton == LEFT && focused) {
-    if (mouseY >= ((res_y * scale) + 5) && mouseY <= (res_y * scale) + 5 + 30)
-    {
-      curcolor_id = ((mouseX - GetLeft()) - 20) / 20;
-      if (curcolor_id < pal.length)
-      {
-        curcolor = pal[curcolor_id];
-      }
-      
-      if (curcolor_id < pal.length - 1)
-      {
-        StartSound(selectedInsect, Insects[selectedInsect].soundType, Insects[selectedInsect].soundInst, (int)frameRate / 12, notelist[Insects[selectedInsect].soundNoteID][curcolor_id], curcolor_id);
-      }
-    }
-  }
 }

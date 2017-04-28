@@ -344,8 +344,8 @@ int IsCursorOnInsect()
 {
   for (int i = 0; i < Insects.length; i++)
   {
-    if (((mouseX - GetLeft()) >= (Insects[i].x - (15f / 2f))) && ((mouseX - GetLeft()) <= (Insects[i].x + (15f / 2f)))
-     && (mouseY >= (Insects[i].y - (15f / 2f))) && (mouseY <= (Insects[i].y + (15f / 2f))))
+    if (((cursorX - GetLeft()) >= (Insects[i].x - (15f / 2f))) && ((cursorX - GetLeft()) <= (Insects[i].x + (15f / 2f)))
+     && (cursorY >= (Insects[i].y - (15f / 2f))) && (cursorY <= (Insects[i].y + (15f / 2f))))
     {
       return i;
     }
@@ -379,8 +379,8 @@ void GrabInsectDraw()
 {
   if (grabbedInsect >= 0)
   {
-    Insects[grabbedInsect].x = mouseX - GetLeft();
-    Insects[grabbedInsect].y = mouseY;
+    Insects[grabbedInsect].x = cursorX - GetLeft();
+    Insects[grabbedInsect].y = cursorY;
     InsectDisplay(grabbedInsect);
   }
 }

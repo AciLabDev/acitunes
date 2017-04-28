@@ -80,6 +80,12 @@ final int D_RIGHT = 1;
 final int D_UP = 2;
 final int D_LEFT = 3;
 
+//Current Cursor variables
+int cursorX;
+int cursorY;
+int cursorpX;
+int cursorpY;
+
 // Start
 void setup() {  
   size(800, 900);
@@ -125,7 +131,6 @@ void draw() {
       for (int i = 0; i < globalspeed; i++)
       {
         BitmapManage();
-        ColorManage();
         InsectManage();
         EffectManage();
         SoundManage();
@@ -134,7 +139,6 @@ void draw() {
     else
     {
       BitmapManage();
-      ColorManage();
       InsectDisplay();
       SoundManage();
       EffectManage();
@@ -172,6 +176,8 @@ void mouseWheel(MouseEvent event) {
 }
 
 void mousePressed() {
+  updateCursorPosition();
+  
   if (mode == 0)
   {
     if (!isDrawing && IsCursorOnInsect() != -1)
@@ -194,9 +200,10 @@ void mousePressed() {
 }
 
 void mouseReleased() {
+  updateCursorPosition();
+  
   if (mode == 0)
   {
-    ColorInput();
     MenuInput();
     UngrabInsect();
     isDrawing = false;
@@ -212,6 +219,8 @@ void mouseReleased() {
 }
 
 void mouseDragged() {
+  updateCursorPosition();
+  
   if (mode == 0)
   {
     if (grabbedInsect >= 0)
@@ -307,4 +316,33 @@ int GetLeft()
     return (width / 2) - (int)((res_x * scale) / 2);
   else
     return 0;
+}
+
+//Cursor Interface
+int GetCursorX()
+{
+    return mouseX;
+}
+
+int GetCursorY()
+{
+    return mouseY;
+}
+
+int GetPrevCursorX()
+{
+    return pmouseX;
+}
+
+int GetPrevCursorY()
+{
+    return pmouseY;
+}
+
+void updateCursorPosition()
+{
+  cursorX = GetCursorX();
+  cursorY = GetCursorY();
+  cursorpX = GetPrevCursorX();
+  cursorpY = GetPrevCursorY();
 }
