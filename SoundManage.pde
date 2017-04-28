@@ -1,9 +1,6 @@
-SqrOsc square;
-TriOsc triangle;
-SawOsc saw;
-SinOsc sine;
-Pulse pulse;
-WhiteNoise noise;
+AudioOutput out;
+Minim minim;
+Oscil[] wave;
 
 MidiBus midi;
 
@@ -145,8 +142,8 @@ public class SoundChannel {
   public void Reset() {
     this.type = 0;
     this.inst = 0;
-    this.frame = 0;
-    this.curframe = 0;
+    this.frame = -1;
+    this.curframe = -1;
     this.freq = 0;
     this.note = 0;
     this.color_id = 0;
@@ -159,11 +156,12 @@ SoundChannel[] Sounds;
 void SoundInit(int nb)
 {
   //Init Sound
-  square = new SqrOsc(this);
-  triangle = new TriOsc(this);
-  saw = new SawOsc(this);
-  sine = new SinOsc(this);
-  pulse = new Pulse(this);
+  minim = new Minim( this );
+  out = minim.getLineOut();
+  
+  wave = new Oscil[nb];
+  for (int i = 0; i < nb; i++)
+    wave[i] = new Oscil(0, 0);
   
   Sounds = new SoundChannel[nb];
   for (int i = 0; i < Sounds.length; i++)
@@ -177,127 +175,96 @@ void SoundManage()
 {
   for (int id = 0; id < Sounds.length; id++)
   {
-    if (Sounds[id].type == 0)
+    if (Sounds[id].frame != -1)
     {
-      //Synth
-      switch (Sounds[id].inst) {
-        case 1:
-          //Square
-          if (Sounds[id].curframe >= Sounds[id].frame)
-          {
-            Sounds[id].Reset();
-            square.stop();
-          }
-          square.freq(Sounds[id].freq * 2);
-          
-          if (Sounds[id].curframe == 0)
-          {
-            square.stop();
-            square.play();
-          }        
-          Sounds[id].curframe++;
-          break;
-        case 2:
-          //Triangle
-          if (Sounds[id].curframe >= Sounds[id].frame)
-          {
-            Sounds[id].Reset();
-            triangle.stop();
-          }
-          triangle.freq(Sounds[id].freq * 2);
-          if (Sounds[id].curframe == 0)
-          {
-            triangle.stop();
-            triangle.play();
-          }        
-          Sounds[id].curframe++;
-          break;
-        case 3:
-          //Saw
-          if (Sounds[id].curframe >= Sounds[id].frame)
-          {
-            Sounds[id].Reset();
-            saw.stop();
-          }
-          saw.freq(Sounds[id].freq * 2);
-          if (Sounds[id].curframe == 0)
-          {
-            saw.stop();
-            saw.play();
-          }        
-          Sounds[id].curframe++;
-          break;
-        case 4:
-          //Sine
-          if (Sounds[id].curframe >= Sounds[id].frame)
-          {
-            Sounds[id].Reset();
-            sine.stop();
-          }
-          sine.freq(Sounds[id].freq * 2);
-          if (Sounds[id].curframe == 0)
-          {
-            sine.stop();
-            sine.play();
-          }        
-          Sounds[id].curframe++;
-          break;
-        case 5:
-          //Pulse
-          if (Sounds[id].curframe >= Sounds[id].frame)
-          {
-            Sounds[id].Reset();
-            pulse.stop();
-          }
-          pulse.freq(Sounds[id].freq * 2);
-          if (Sounds[id].curframe == 0)
-          {
-            pulse.stop();
-            pulse.play();
-          }        
-          Sounds[id].curframe++;
-          break;
+      if (Sounds[id].type == 0)
+      {
+        //Synth
+        if (Sounds[id].curframe >= Sounds[id].frame)
+        {
+          Sounds[id].Reset();
+          wave[id].unpatch(out);
+        }
+        wave[id].setFrequency(Sounds[id].freq * 2);
+        if (Sounds[id].curframe == 0)
+        {
+          wave[id].unpatch(out);
+          wave[id].patch(out);
+        }        
+        Sounds[id].curframe++;
       }
-    }
-    else if (Sounds[id].type == 1)
-    {
-      //MIDI
-      if (Sounds[id].curframe >= Sounds[id].frame)
+      else if (Sounds[id].type == 1)
       {
-        midi.sendNoteOff(id, Sounds[id].note, 0);
-        Sounds[id].Reset();
+        //MIDI
+        if (Sounds[id].curframe >= Sounds[id].frame)
+        {
+          midi.sendNoteOff(id, Sounds[id].note, 0);
+          Sounds[id].Reset();
+        }
+            
+        if (Sounds[id].curframe == 0)
+        {
+          midi.sendNoteOff(id, Sounds[id].note, 0);
+          midi.sendMessage(0xC0+id, Sounds[id].inst);  //Program Change
+          midi.sendNoteOn(id, Sounds[id].note, 127);
+        }        
+        Sounds[id].curframe++;
       }
-          
-      if (Sounds[id].curframe == 0)
+      else if (Sounds[id].type == 2)
       {
-        midi.sendNoteOff(id, Sounds[id].note, 0);
-        midi.sendMessage(0xC0+id, Sounds[id].inst);  //Program Change
-        midi.sendNoteOn(id, Sounds[id].note, 127);
-      }        
-      Sounds[id].curframe++;
-    }
-    else if (Sounds[id].type == 2)
-    {
-      //MIDI Drum Kit
-      if (Sounds[id].curframe >= Sounds[id].frame)
-      {
-        midi.sendNoteOff(9, Sounds[id].note, 127);
-        Sounds[id].Reset();
+        //MIDI Drum Kit
+        if (Sounds[id].curframe >= Sounds[id].frame)
+        {
+          midi.sendNoteOff(9, Sounds[id].note, 127);
+          Sounds[id].Reset();
+        }
+            
+        if (Sounds[id].curframe == 0)
+        {
+          midi.sendNoteOff(9, Sounds[id].note, 127);
+          midi.sendMessage(0xC9, drumkits[Sounds[id].color_id]);  //Program Change
+          midi.sendNoteOn(9, Sounds[id].note, 127);
+        }        
+        Sounds[id].curframe++;
       }
-          
-      if (Sounds[id].curframe == 0)
-      {
-        midi.sendNoteOff(9, Sounds[id].note, 127);
-        midi.sendMessage(0xC9, drumkits[Sounds[id].color_id]);  //Program Change
-        midi.sendNoteOn(9, Sounds[id].note, 127);
-      }        
-      Sounds[id].curframe++;
     }
   }
 }
 
 void StartSound(int id, int type, int inst, int duration, int note, int color_id)
 {
+  if (type == 0)
+  {
+    StopSound(id);
+    switch (inst)
+    {
+      case 0:
+        //None
+        wave[id] = new Oscil(0, 0);
+        break;
+      case 1:
+        //Square
+        wave[id] = new Oscil(440, 0.5f, Waves.SQUARE);
+        break;
+      case 2:
+        //Triangle
+        wave[id] = new Oscil(440, 0.5f, Waves.TRIANGLE);
+        break;
+      case 3:
+        //Saw
+        wave[id] = new Oscil(440, 0.5f, Waves.SAW);
+        break;
+      case 4:
+        //Sine
+        wave[id] = new Oscil(440, 0.5f, Waves.SINE);
+        break;
+      case 5:
+        //Pulse
+        wave[id] = new Oscil(440, 0.5f, Waves.QUARTERPULSE);
+        break;
+    }
+  }
+  
   Sounds[id].Set(type, inst, duration, midiToFreq(note), note, color_id);
 }
 
@@ -309,13 +276,8 @@ void StartSound(int id, int type, int inst, int duration, float freq, int color_
 void StopSound(int id)
 {
   Sounds[id].Reset();
-    
-  square.stop();
-  triangle.stop();
-  saw.stop();
-  sine.stop();
-  pulse.stop();
-    
+  wave[id].unpatch(out);
+  
   midi.sendMessage(0xB0 + id, 123, 0); //All Notes Off
   midi.sendMessage(0xB0 + 9, 123, 0); //All Notes Off
 }
@@ -326,11 +288,7 @@ void StopAllSounds()
   {
     Sounds[id].Reset();
     
-    square.stop();
-    triangle.stop();
-    saw.stop();
-    sine.stop();
-    pulse.stop();
+    wave[id].unpatch(out);
     
     midi.sendMessage(0xB0 + id, 123, 0); //All Notes Off
   

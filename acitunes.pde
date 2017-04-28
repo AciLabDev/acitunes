@@ -15,7 +15,8 @@
 - Insect Designs
 */
 
-import processing.sound.*;
+import ddf.minim.*;
+import ddf.minim.ugens.*;
 import themidibus.*;
 import javax.xml.bind.DatatypeConverter.*;
 
