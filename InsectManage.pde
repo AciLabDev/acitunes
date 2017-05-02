@@ -1,5 +1,9 @@
-int grabbedInsect;            //Grabbed Insect (-1 = None)
+int grabbedInsect;            //Grabbed Insect (-1 = None) (for Mouse)
 int selectedInsect;           //Selected Insect
+
+//For TUIO
+ArrayList<Integer> cursorInsectID; //0 = None
+ArrayList<Long> cursorSelectID; //Session IDs
 
 color[] insectColorDefault = {
   #FFFF00,
@@ -112,6 +116,9 @@ void InsectInit(int nb)
   
   grabbedInsect = -1;
   selectedInsect = 0;
+  
+  cursorSelectID = new ArrayList<Long>();
+  cursorInsectID = new ArrayList<Integer>();
 }
 
 void InsectDefault(int nb)
@@ -353,6 +360,7 @@ int IsCursorOnInsect()
   return -1;
 }
 
+//Mouse
 void GrabInsect(int id)
 {
   if (id >= 0)
@@ -382,5 +390,42 @@ void GrabInsectDraw()
     Insects[grabbedInsect].x = cursorX - GetLeft();
     Insects[grabbedInsect].y = cursorY;
     InsectDisplay(grabbedInsect);
+  }
+}
+
+//TUIO
+void GrabInsect(int id, TuioCursor tcur)
+{
+  if (id >= 0)
+  {
+    Insects[id].enable = false;
+    selectedInsect = id;
+    
+    cursorInsectID.add(id);
+    cursorSelectID.add(tcur.getSessionID());
+  }
+}
+
+void UngrabInsect(TuioCursor tcur)
+{
+  //Snap to Grid
+  if (cursorSelectID.contains(tcur.getSessionID()))
+  {
+    Insects[cursorInsectID.get(cursorSelectID.lastIndexOf(tcur.getSessionID()))].x = (int)(Insects[cursorInsectID.get(cursorSelectID.lastIndexOf(tcur.getSessionID()))].x / scale) * scale + (scale / 2);
+    Insects[cursorInsectID.get(cursorSelectID.lastIndexOf(tcur.getSessionID()))].y = (int)(Insects[cursorInsectID.get(cursorSelectID.lastIndexOf(tcur.getSessionID()))].y / scale) * scale + (scale / 2);
+    Insects[cursorInsectID.get(cursorSelectID.lastIndexOf(tcur.getSessionID()))].enable = true;
+    
+    cursorInsectID.remove(cursorSelectID.lastIndexOf(tcur.getSessionID()));
+    cursorSelectID.remove(tcur.getSessionID());
+  }
+}
+
+void GrabInsectDraw(TuioCursor tcur)
+{
+  if (cursorSelectID.contains(tcur.getSessionID()))
+  {
+    Insects[cursorInsectID.get(cursorSelectID.lastIndexOf(tcur.getSessionID()))].x = cursorX - GetLeft();
+    Insects[cursorInsectID.get(cursorSelectID.lastIndexOf(tcur.getSessionID()))].y = cursorY;
+    InsectDisplay(cursorInsectID.get(cursorSelectID.lastIndexOf(tcur.getSessionID())));
   }
 }

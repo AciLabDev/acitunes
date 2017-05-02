@@ -191,6 +191,7 @@ void mouseWheel(MouseEvent event) {
   }
 }
 
+//Cursor Mouse
 void mousePressed() {
   updateCursorPosition();
   
@@ -254,6 +255,7 @@ void mouseDragged() {
   }
 }
 
+//Cursor TUIO
 void addTuioCursor(TuioCursor tcur)
 {
   updateCursorPosition(tcur);
@@ -262,7 +264,7 @@ void addTuioCursor(TuioCursor tcur)
   {
     if (!isDrawing && IsCursorOnInsect() != -1)
     {
-      GrabInsect(IsCursorOnInsect());
+      GrabInsect(IsCursorOnInsect(), tcur);
     }
     else
     {  
@@ -285,8 +287,8 @@ void updateTuioCursor(TuioCursor tcur)
   
   if (mode == 0)
   {
-    if (grabbedInsect >= 0)
-      GrabInsectDraw();
+    if (cursorSelectID.contains(tcur.getSessionID()))
+      GrabInsectDraw(tcur);
     else
     {  
       if (!ignoreframeinput)
@@ -307,7 +309,7 @@ void removeTuioCursor(TuioCursor tcur)
   if (mode == 0)
   {
     MenuInput();
-    UngrabInsect();
+    UngrabInsect(tcur);
     isDrawing = false;
   }
   else if (mode == 1)
@@ -337,8 +339,8 @@ void Init(int nb)
   SoundInit(nb_insect);
   
   Insects[0].SetSound(1, 0, 0);
-  Insects[1].SetSound(1, 24, 0);
-  Insects[2].SetSound(1, 36, 0);
+  Insects[1].SetSound(1, 25, 0);
+  Insects[2].SetSound(1, 38, 0);
   Insects[3].SetSound(2, 0, 1);
   
   InsectDefault(Insects.length);
