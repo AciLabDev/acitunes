@@ -187,7 +187,7 @@ void BitmapInput()
 {
   img.beginDraw();
   if (IsCursorOnBitmap()) {
-    if (mouseButton == LEFT)
+    if (mouseButton != RIGHT)
     {
       if (curcolor_id == (pal.length - 1))
         img.strokeWeight(3);

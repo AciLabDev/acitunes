@@ -20,6 +20,12 @@ import ddf.minim.ugens.*;
 import themidibus.*;
 import javax.xml.bind.DatatypeConverter.*;
 
+// import the TUIO library
+import TUIO.*;
+// declare a TuioProcessing client
+TuioProcessing tuioClient;
+
+
 // Init
 int version = 1;            //Current Version
 
@@ -88,13 +94,15 @@ int cursorpX;
 int cursorpY;
 
 // Start
-void setup() {  
-  size(800, 900);
+void setup() {
+  size(800, 600);
   //fullScreen();
   surface.setResizable(true);
   frameRate(60);
   background(50);
   noSmooth();
+  
+  tuioClient  = new TuioProcessing(this);
   
   //Canvas Size
   newres_x = res_x = 104;
@@ -124,6 +132,7 @@ void setup() {
 void draw() {
   background(50);
   ResizeCheck();
+  
   if (mode == 0)
   {
     //Regular Mode
@@ -158,6 +167,12 @@ void draw() {
   {
     //MIDI Output select
     MidiMenuManage();
+  }
+  
+  ArrayList<TuioCursor> tuioCursorList = tuioClient.getTuioCursorList();
+  for (int i=0;i<tuioCursorList.size();i++) {
+    TuioCursor tcur = tuioCursorList.get(i);
+    ellipse(tcur.getScreenX(width), tcur.getScreenY(height), 10, 10);
   }
 }
 
@@ -236,6 +251,72 @@ void mouseDragged() {
       else
         ignoreframeinput = false;
     }
+  }
+}
+
+void addTuioCursor(TuioCursor tcur)
+{
+  updateCursorPosition(tcur);
+  
+  if (mode == 0)
+  {
+    if (!isDrawing && IsCursorOnInsect() != -1)
+    {
+      GrabInsect(IsCursorOnInsect());
+    }
+    else
+    {  
+      if (IsCursorOnBitmap())
+        BitmapKeepUndo();
+      if (!ignoreframeinput)
+      {
+        BitmapInput();
+        isDrawing = true;
+      }
+      else
+        ignoreframeinput = false;
+    }
+  }
+}
+
+void updateTuioCursor(TuioCursor tcur)
+{
+  updateCursorPosition(tcur);
+  
+  if (mode == 0)
+  {
+    if (grabbedInsect >= 0)
+      GrabInsectDraw();
+    else
+    {  
+      if (!ignoreframeinput)
+      {
+        BitmapInput();
+        isDrawing = true;
+      }
+      else
+        ignoreframeinput = false;
+    }
+  }
+}
+
+void removeTuioCursor(TuioCursor tcur)
+{
+  updateCursorPosition(tcur);
+  
+  if (mode == 0)
+  {
+    MenuInput();
+    UngrabInsect();
+    isDrawing = false;
+  }
+  else if (mode == 1)
+  {
+    NewMenuInput();
+  }
+  else if (mode == 2)
+  {
+    MidiMenuInput();
   }
 }
 
@@ -346,4 +427,76 @@ void updateCursorPosition()
   cursorY = GetCursorY();
   cursorpX = GetPrevCursorX();
   cursorpY = GetPrevCursorY();
+}
+
+int GetCursorX(TuioCursor tcur)
+{
+    return tcur.getScreenX(width);
+}
+
+int GetCursorY(TuioCursor tcur)
+{
+    return tcur.getScreenY(height);
+}
+
+int GetPrevCursorX(TuioCursor tcur)
+{
+    ArrayList<TuioPoint> path = tcur.getPath();
+    if (path.size() > 1)
+      return path.get(path.size() - 2).getScreenX(width);
+    else
+      return tcur.getScreenX(width);
+}
+
+int GetPrevCursorY(TuioCursor tcur)
+{
+    ArrayList<TuioPoint> path = tcur.getPath();
+    if (path.size() > 1)
+      return path.get(path.size() - 2).getScreenY(height);
+    else
+      return tcur.getScreenY(height);
+}
+
+void updateCursorPosition(TuioCursor tcur)
+{
+  cursorX = GetCursorX(tcur);
+  cursorY = GetCursorY(tcur);
+  cursorpX = GetPrevCursorX(tcur);
+  cursorpY = GetPrevCursorY(tcur);
+}
+
+//TUIO Callbacks - Useless
+void addTuioObject(TuioObject tobj)
+{
+  
+}
+
+void updateTuioObject(TuioObject tobj)
+{
+  
+}
+
+void removeTuioObject(TuioObject tobj)
+{
+  
+}
+
+void addTuioBlob(TuioBlob tblb)
+{
+  
+}
+
+void updateTuioBlob(TuioBlob tblb)
+{
+  
+}
+
+void removeTuioBlob(TuioBlob tblb)
+{
+  
+}
+
+void refresh(TuioTime frameTime)
+{
+  
 }
