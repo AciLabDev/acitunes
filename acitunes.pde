@@ -15,9 +15,14 @@
 - Insect Designs
 */
 
+// sound library
 import ddf.minim.*;
 import ddf.minim.ugens.*;
+
+// midi library
 import themidibus.*;
+
+// json library
 import javax.xml.bind.DatatypeConverter.*;
 
 // import the TUIO library
@@ -141,7 +146,8 @@ void draw() {
       for (int i = 0; i < globalspeed; i++)
       {
         BitmapManage();
-        InsectManage();
+        thread("InsectManage"); //Only thing that can use its own thread
+        InsectDisplay();
         EffectManage();
         SoundManage();
       }    
