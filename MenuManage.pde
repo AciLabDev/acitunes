@@ -129,27 +129,27 @@ void MenuManageMouse()
       break;
   }
   
-  if (Insects[selectedInsect].speed == 0)
+  if (Insects[selectedInsect].speed == speedInsect_0)
     drawIntImage(pauseIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 2 * 20, (res_y * scale) + 72, 1);
   else
     drawIntImage(pauseEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 2 * 20, (res_y * scale) + 72, 1);
     
-  if (Insects[selectedInsect].speed >= 0.25)
+  if (Insects[selectedInsect].speed >= speedInsect_1)
     drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 3 * 20, (res_y * scale) + 72, 1);
   else
     drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 3 * 20, (res_y * scale) + 72, 1);
     
-  if (Insects[selectedInsect].speed >= 0.5)
+  if (Insects[selectedInsect].speed >= speedInsect_2)
     drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 4 * 20, (res_y * scale) + 72, 1);
   else
     drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 4 * 20, (res_y * scale) + 72, 1);
   
-  if (Insects[selectedInsect].speed >= 0.75)
+  if (Insects[selectedInsect].speed >= speedInsect_3)
     drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 5 * 20, (res_y * scale) + 72, 1);
   else
     drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 5 * 20, (res_y * scale) + 72, 1);
   
-  if (Insects[selectedInsect].speed >= 1)
+  if (Insects[selectedInsect].speed >= speedInsect_4)
     drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 6 * 20, (res_y * scale) + 72, 1);
   else
     drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 22 + 6 * 20, (res_y * scale) + 72, 1);
@@ -340,23 +340,23 @@ void MenuInputMouse()
         break;
       case 2:
         //Speed 0
-        Insects[selectedInsect].speed = 0;
+        Insects[selectedInsect].speed = speedInsect_0;
         break;
       case 3:
         //Speed 0.25
-        Insects[selectedInsect].speed = 0.25;
+        Insects[selectedInsect].speed = speedInsect_1;
         break;
       case 4:
         //Speed 0.5
-        Insects[selectedInsect].speed = 0.5;
+        Insects[selectedInsect].speed = speedInsect_2;
         break;
       case 5:
         //Speed 0.75
-        Insects[selectedInsect].speed = 0.75;
+        Insects[selectedInsect].speed = speedInsect_3;
         break;
       case 6:
         //Speed 1
-        Insects[selectedInsect].speed = 1;
+        Insects[selectedInsect].speed = speedInsect_4;
         break;
       case 7:
         //Direction Change
@@ -584,27 +584,27 @@ void MenuManageTUIO()
       break;
   }
   
-  if (Insects[selectedInsect].speed == 0)
+  if (Insects[selectedInsect].speed == speedInsect_0)
     drawIntImage(pauseIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 2 * 34, (res_y * scale) + 48, 2);
   else
     drawIntImage(pauseEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 2 * 34, (res_y * scale) + 48, 2);
     
-  if (Insects[selectedInsect].speed >= 0.25)
+  if (Insects[selectedInsect].speed >= speedInsect_1)
     drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 3 * 34, (res_y * scale) + 48, 2);
   else
     drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 3 * 34, (res_y * scale) + 48, 2);
     
-  if (Insects[selectedInsect].speed >= 0.5)
+  if (Insects[selectedInsect].speed >= speedInsect_2)
     drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 4 * 34, (res_y * scale) + 48, 2);
   else
     drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 4 * 34, (res_y * scale) + 48, 2);
   
-  if (Insects[selectedInsect].speed >= 0.75)
+  if (Insects[selectedInsect].speed >= speedInsect_3)
     drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 5 * 34, (res_y * scale) + 48, 2);
   else
     drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 5 * 34, (res_y * scale) + 48, 2);
   
-  if (Insects[selectedInsect].speed >= 1)
+  if (Insects[selectedInsect].speed >= speedInsect_4)
     drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 6 * 34, (res_y * scale) + 48, 2);
   else
     drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 6 * 34, (res_y * scale) + 48, 2);
@@ -810,23 +810,23 @@ void MenuInputTUIO()
         break;
       case 2:
         //Speed 0
-        Insects[selectedInsect].speed = 0;
+        Insects[selectedInsect].speed = speedInsect_0;
         break;
       case 3:
         //Speed 0.25
-        Insects[selectedInsect].speed = 0.25;
+        Insects[selectedInsect].speed = speedInsect_1;
         break;
       case 4:
         //Speed 0.5
-        Insects[selectedInsect].speed = 0.5;
+        Insects[selectedInsect].speed = speedInsect_2;
         break;
       case 5:
         //Speed 0.75
-        Insects[selectedInsect].speed = 0.75;
+        Insects[selectedInsect].speed = speedInsect_3;
         break;
       case 6:
         //Speed 1
-        Insects[selectedInsect].speed = 1;
+        Insects[selectedInsect].speed = speedInsect_4;
         break;
       case 7:
         //Direction Change

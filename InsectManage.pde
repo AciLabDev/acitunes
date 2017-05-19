@@ -1,6 +1,12 @@
 int grabbedInsect;            //Grabbed Insect (-1 = None) (for Mouse)
 int selectedInsect;           //Selected Insect
 
+final float speedInsect_0 = 0;
+final float speedInsect_1 = 0.25;
+final float speedInsect_2 = 0.50;
+final float speedInsect_3 = 0.75;
+final float speedInsect_4 = 0.99;
+
 //For TUIO
 ArrayList<Integer> cursorInsectID; //0 = None
 ArrayList<Long> cursorSelectID; //Session IDs
@@ -131,58 +137,58 @@ void InsectDefault(int nb)
   {
     Insects[0].x = (res_x / 2f) * scale;
     Insects[0].y = (res_y / 2f) * scale;
-    Insects[0].speed = 0.25;
+    Insects[0].speed = speedInsect_1;
     Insects[0].direction = int(random(D_DOWN, D_LEFT));
   }
   else if (nb == 2)
   {
     Insects[0].x = (res_x / 4f) * scale;
     Insects[0].y = (res_y / 4f) * scale;
-    Insects[0].speed = 0.25;
+    Insects[0].speed = speedInsect_1;
     Insects[0].direction = int(random(D_DOWN, D_RIGHT));
     
     Insects[1].x = (res_x * (3f / 4f)) * scale;
     Insects[1].y = (res_y * (3f / 4f)) * scale;
-    Insects[1].speed = 0.25;
+    Insects[1].speed = speedInsect_1;
     Insects[1].direction = int(random(D_UP, D_LEFT));
   }
   else if (nb == 3)
   {
     Insects[0].x = (res_x / 4f) * scale;
     Insects[0].y = (res_y / 4f) * scale;
-    Insects[0].speed = 0.25;
+    Insects[0].speed = speedInsect_1;
     Insects[0].direction = int(random(D_DOWN, D_RIGHT));
     
     Insects[1].x = (res_x * (3f / 4f)) * scale;
     Insects[1].y = (res_y * (3f / 4f)) * scale;
-    Insects[1].speed = 0.25;
+    Insects[1].speed = speedInsect_1;
     Insects[1].direction = int(random(D_UP, D_LEFT));
     
     Insects[2].x = (res_x / 2f) * scale;
     Insects[2].y = (res_y / 2f) * scale;
-    Insects[2].speed = 0.25;
+    Insects[2].speed = speedInsect_1;
     Insects[2].direction = int(random(D_DOWN, D_LEFT));
   }
   else if (nb == 4)
   {
     Insects[0].x = (res_x / 4f) * scale;
     Insects[0].y = (res_y / 4f) * scale;
-    Insects[0].speed = 0.25;
+    Insects[0].speed = speedInsect_1;
     Insects[0].direction = D_LEFT;
     
     Insects[1].x = (res_x / 4f) * scale;
     Insects[1].y = (res_y / 4f) * scale;
-    Insects[1].speed = 0.25;
+    Insects[1].speed = speedInsect_1;
     Insects[1].direction = D_UP;
     
     Insects[2].x = (res_x * (3f / 4f)) * scale;
     Insects[2].y = (res_y * (3f / 4f)) * scale;
-    Insects[2].speed = 0.25;
+    Insects[2].speed = speedInsect_1;
     Insects[2].direction = D_RIGHT;
     
     Insects[3].x = (res_x * (3f / 4f)) * scale;
     Insects[3].y = (res_y * (3f / 4f)) * scale;
-    Insects[3].speed = 0.25;
+    Insects[3].speed = speedInsect_1;
     Insects[3].direction = D_DOWN;
   }
 }
@@ -192,7 +198,7 @@ void InsectLineRandom()
   int space = int(random(1, res_x / 4));
   for (int i = 0; i < Insects.length; i++)
   {
-    Insects[i].Set((space * i) * scale + scale / 2, (res_y / 2) * scale + scale / 2, 0.25, D_RIGHT, insectColorDefault[i & 3]);
+    Insects[i].Set((space * i) * scale + scale / 2, (res_y / 2) * scale + scale / 2, speedInsect_1, D_RIGHT, insectColorDefault[i & 3]);
   }
 }
 
@@ -200,7 +206,7 @@ void InsectMultiLineRandom()
 {
   for (int i = 0; i < Insects.length; i++)
   {
-    Insects[i].Set(0 * scale + scale / 2, ((res_y / (Insects.length + 1)) * (i + 1)) * scale + scale / 2, 0.25, D_RIGHT, insectColorDefault[i & 3]);
+    Insects[i].Set(0 * scale + scale / 2, ((res_y / (Insects.length + 1)) * (i + 1)) * scale + scale / 2, speedInsect_1, D_RIGHT, insectColorDefault[i & 3]);
   }
 }
 
@@ -208,7 +214,7 @@ void InsectPatternRandom(int space_x, int space_y)
 {
   for (int i = 0; i < Insects.length; i++)
   {
-    Insects[i].Set(((res_x / space_x / 2) * space_x) * scale + scale / 2, ((res_y / space_y / 2) * space_y) * scale + scale / 2, 0.25, i & 3, insectColorDefault[i & 3]);
+    Insects[i].Set(((res_x / space_x / 2) * space_x) * scale + scale / 2, ((res_y / space_y / 2) * space_y) * scale + scale / 2, speedInsect_1, i & 3, insectColorDefault[i & 3]);
   }
 }
 
@@ -261,14 +267,14 @@ void InsectManage()
         Insects[id].col_x = Insects[id].x;
         Insects[id].col_y = Insects[id].y - (scale / 2);
         if (Insects[id].col_y < 0)
-          Insects[id].col_y += res_y * scale; 
+          Insects[id].col_y += res_y * scale;
         break;
       case D_RIGHT:
         Insects[id].x += Insects[id].speed * scale / (frameRate / 30);
         Insects[id].col_x = Insects[id].x - (scale / 2);
         Insects[id].col_y = Insects[id].y;
         if (Insects[id].col_x < 0)
-          Insects[id].col_x += res_x * scale; 
+          Insects[id].col_x += res_x * scale;
         break;
       case D_UP:
         Insects[id].y -= Insects[id].speed * scale / (frameRate / 30);
@@ -285,24 +291,24 @@ void InsectManage()
           Insects[id].col_x -= res_x * scale;
         break;
     }
-
-    InsectDisplay(id);
     
     //Pixel Detection
     img.loadPixels();
   
-    color insectColor = img.get((int)(Insects[id].col_x / scale), (int)(Insects[id].col_y / scale));
+    color insectColor = img.get(floor(Insects[id].col_x / scale), floor(Insects[id].col_y / scale));
     int insectColorID = 0;
     
     for (int i = 0; i < pal.length; i++)
+    {
       if (insectColor == pal[i])
       {
         insectColorID = i;
         break;
       }
+    }
     
     //Check Pixel (compare with previous so it doesn't repeat)
-    if ((Insects[id].px != (int)(Insects[id].col_x / scale) || (Insects[id].py != (int)(Insects[id].col_y / scale))))
+    if ((Insects[id].px != floor(Insects[id].col_x / scale) || (Insects[id].py != floor(Insects[id].col_y / scale))))
     {
       //Play Effect and Sound
       if (insectColor != pal[pal.length - 1])
@@ -328,7 +334,7 @@ void InsectManage()
       }
     }
     
-    //Constant X/Y position if vertical/horizontal movement, insect should be snapped to grid
+    //Constant X/Y position if vertical/horizontal movement, insect should be permanently snapped to grid
     switch (Insects[id].direction)
     {
       case D_UP:
@@ -342,8 +348,8 @@ void InsectManage()
     }
     
     //Keep previous X/Y pixel position
-    Insects[id].px = (int)(Insects[id].col_x / scale);
-    Insects[id].py = (int)(Insects[id].col_y / scale);
+    Insects[id].px = floor(Insects[id].col_x / scale);
+    Insects[id].py = floor(Insects[id].col_y / scale);
   }
 }
 
