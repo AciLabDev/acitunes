@@ -443,7 +443,12 @@ void ColorInput()
   if (mouseButton == LEFT && focused) {
     if (cursorY >= ((res_y * scale) + 5) && cursorY <= (res_y * scale) + 5 + 30)
     {
-      curcolor_id = ((cursorX - GetLeft()) - 20) / 20;
+      
+      if (((cursorX - GetLeft()) - 20) / 20 <= pal.length && ((cursorX - GetLeft()) - 20) / 20 >= 0)
+      {
+        curcolor_id = ((cursorX - GetLeft()) - 20) / 20;
+      }
+      
       if (curcolor_id < pal.length)
       {
         curcolor = pal[curcolor_id];
@@ -554,134 +559,132 @@ void MenuManageTUIO()
     drawIntImage(blackIcon, 12, 12, #000000, GetLeft() + 24 + 11 * 34, (res_y * scale) + 8, 2);
     drawIntImage(checkerIcon, 12, 12, #000000, GetLeft() + 24 + 12 * 34, (res_y * scale) + 8, 2);
   }
-  else if (menuTUIOpage == 2)
+  
+  //2nd line - Insect Setting
+  drawIntImage(buttonIconCircle, 16, 16, insectColorDefault[selectedInsect & 3], GetLeft() + 20 + 0 * 34, (res_y * scale) + 44, 2);
+  stroke(insectColorDefault[selectedInsect & 3]);
+  strokeWeight(1);
+  drawIntImage(buttonIcon, 16, 16, pal[8], GetLeft() + 20 + 7 * 34, (res_y * scale) + 44, 2);
+  drawIntImage(buttonIcon, 16, 16, pal[pal.length - 2], GetLeft() + 20 + 8 * 34, (res_y * scale) + 44, 2);
+  
+  //2nd line Icons  
+  switch (selectedInsect)
   {
-    //2nd line - Insect Setting
-    drawIntImage(buttonIconCircle, 16, 16, insectColorDefault[selectedInsect & 3], GetLeft() + 20 + 0 * 34, (res_y * scale) + 4, 2);
-    stroke(insectColorDefault[selectedInsect & 3]);
-    strokeWeight(1);
-    drawIntImage(buttonIcon, 16, 16, pal[8], GetLeft() + 20 + 7 * 34, (res_y * scale) + 4, 2);
-    drawIntImage(buttonIcon, 16, 16, pal[pal.length - 2], GetLeft() + 20 + 8 * 34, (res_y * scale) + 4, 2);
+    case 0:
+      drawIntImage(oneIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 0 * 34, (res_y * scale) + 48, 2);
+      break;
+    case 1:
+      drawIntImage(twoIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 0 * 34, (res_y * scale) + 48, 2);
+      break;
+    case 2:
+      drawIntImage(threeIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 0 * 34, (res_y * scale) + 48, 2);
+      break;
+    case 3:
+      drawIntImage(fourIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 0 * 34, (res_y * scale) + 48, 2);
+      break;
+  }
+  
+  if (Insects[selectedInsect].speed == 0)
+    drawIntImage(pauseIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 2 * 34, (res_y * scale) + 48, 2);
+  else
+    drawIntImage(pauseEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 2 * 34, (res_y * scale) + 48, 2);
     
-    //2nd line Icons  
-    switch (selectedInsect)
+  if (Insects[selectedInsect].speed >= 0.25)
+    drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 3 * 34, (res_y * scale) + 48, 2);
+  else
+    drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 3 * 34, (res_y * scale) + 48, 2);
+    
+  if (Insects[selectedInsect].speed >= 0.5)
+    drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 4 * 34, (res_y * scale) + 48, 2);
+  else
+    drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 4 * 34, (res_y * scale) + 48, 2);
+  
+  if (Insects[selectedInsect].speed >= 0.75)
+    drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 5 * 34, (res_y * scale) + 48, 2);
+  else
+    drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 5 * 34, (res_y * scale) + 48, 2);
+  
+  if (Insects[selectedInsect].speed >= 1)
+    drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 6 * 34, (res_y * scale) + 48, 2);
+  else
+    drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 6 * 34, (res_y * scale) + 48, 2);
+  
+  switch (Insects[selectedInsect].direction)
+  {
+    case D_UP:
+      drawIntImage(upArrow, 12, 12, pal[8], GetLeft() + 24 + 7 * 34, (res_y * scale) + 48, 2);
+      break;
+    case D_DOWN:
+      drawIntImage(downArrow, 12, 12, pal[8], GetLeft() + 24 + 7 * 34, (res_y * scale) + 48, 2);
+      break;
+    case D_LEFT:
+      drawIntImage(leftArrow, 12, 12, pal[8], GetLeft() + 24 + 7 * 34, (res_y * scale) + 48, 2);
+      break;
+    case D_RIGHT:
+      drawIntImage(rightArrow, 12, 12, pal[8], GetLeft() + 24 + 7 * 34, (res_y * scale) + 48, 2);
+      break;
+  }
+  
+  switch (Insects[selectedInsect].soundType)
+  {
+    case 0:
+      drawIntImage(oscIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 8 * 34, (res_y * scale) + 48, 2);
+      break;
+    case 1:
+      drawIntImage(midiIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 8 * 34, (res_y * scale) + 48, 2);
+      break;
+    case 2:
+      drawIntImage(midiDrumIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 8 * 34, (res_y * scale) + 48, 2);
+      break;
+  }
+  
+  if (Insects[selectedInsect].soundType == 0)
+  {
+    //Wave Oscillator
+    drawIntImage(buttonIcon, 16, 16, pal[pal.length - 2], GetLeft() + 20 + 9 * 34, (res_y * scale) + 44, 2);
+    switch (Insects[selectedInsect].soundInst)
     {
-      case 0:
-        drawIntImage(oneIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 0 * 34, (res_y * scale) + 8, 2);
-        break;
       case 1:
-        drawIntImage(twoIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 0 * 34, (res_y * scale) + 8, 2);
+        //Square
+        drawIntImage(squareIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 48, 2);
         break;
       case 2:
-        drawIntImage(threeIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 0 * 34, (res_y * scale) + 8, 2);
+        //Triangle
+        drawIntImage(triangleIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 48, 2);
         break;
       case 3:
-        drawIntImage(fourIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 0 * 34, (res_y * scale) + 8, 2);
+        //Saw
+        drawIntImage(sawIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 48, 2);
+        break;
+      case 4:
+        //Sine
+        drawIntImage(sineIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 48, 2);
+        break;
+      case 5:
+        //Pulse
+        drawIntImage(pulseIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 48, 2);
+        break;
+      default:
+        //None
+        drawIntImage(noneIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 48, 2);
         break;
     }
+  }
+  else if (Insects[selectedInsect].soundType == 1)
+  {
+    //MIDI
+    textSize(12);
+    noFill();
+    stroke(pal[pal.length - 2]);
+    rect(GetLeft() + 20 + 9 * 34, (res_y * scale) + 44, 31, 31);
     
-    if (Insects[selectedInsect].speed == 0)
-      drawIntImage(pauseIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 2 * 34, (res_y * scale) + 8, 2);
-    else
-      drawIntImage(pauseEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 2 * 34, (res_y * scale) + 8, 2);
-      
-    if (Insects[selectedInsect].speed >= 0.25)
-      drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 3 * 34, (res_y * scale) + 8, 2);
-    else
-      drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 3 * 34, (res_y * scale) + 8, 2);
-      
-    if (Insects[selectedInsect].speed >= 0.5)
-      drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 4 * 34, (res_y * scale) + 8, 2);
-    else
-      drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 4 * 34, (res_y * scale) + 8, 2);
+    //number
+    noStroke();
+    fill(pal[pal.length - 2]);
+    text(Insects[selectedInsect].soundInst, GetLeft() + 26 + 9 * 34, (res_y * scale) + 64);
     
-    if (Insects[selectedInsect].speed >= 0.75)
-      drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 5 * 34, (res_y * scale) + 8, 2);
-    else
-      drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 5 * 34, (res_y * scale) + 8, 2);
-    
-    if (Insects[selectedInsect].speed >= 1)
-      drawIntImage(playIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 6 * 34, (res_y * scale) + 8, 2);
-    else
-      drawIntImage(playEmptyIcon, 12, 12, insectColorDefault[selectedInsect & 3], GetLeft() + 24 + 6 * 34, (res_y * scale) + 8, 2);
-    
-    switch (Insects[selectedInsect].direction)
-    {
-      case D_UP:
-        drawIntImage(upArrow, 12, 12, pal[8], GetLeft() + 24 + 7 * 34, (res_y * scale) + 8, 2);
-        break;
-      case D_DOWN:
-        drawIntImage(downArrow, 12, 12, pal[8], GetLeft() + 24 + 7 * 34, (res_y * scale) + 8, 2);
-        break;
-      case D_LEFT:
-        drawIntImage(leftArrow, 12, 12, pal[8], GetLeft() + 24 + 7 * 34, (res_y * scale) + 8, 2);
-        break;
-      case D_RIGHT:
-        drawIntImage(rightArrow, 12, 12, pal[8], GetLeft() + 24 + 7 * 34, (res_y * scale) + 8, 2);
-        break;
-    }
-    
-    switch (Insects[selectedInsect].soundType)
-    {
-      case 0:
-        drawIntImage(oscIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 8 * 34, (res_y * scale) + 8, 2);
-        break;
-      case 1:
-        drawIntImage(midiIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 8 * 34, (res_y * scale) + 8, 2);
-        break;
-      case 2:
-        drawIntImage(midiDrumIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 8 * 34, (res_y * scale) + 8, 2);
-        break;
-    }
-    
-    if (Insects[selectedInsect].soundType == 0)
-    {
-      //Wave Oscillator
-      drawIntImage(buttonIcon, 16, 16, pal[pal.length - 2], GetLeft() + 20 + 9 * 34, (res_y * scale) + 4, 2);
-      switch (Insects[selectedInsect].soundInst)
-      {
-        case 1:
-          //Square
-          drawIntImage(squareIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 8, 2);
-          break;
-        case 2:
-          //Triangle
-          drawIntImage(triangleIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 8, 2);
-          break;
-        case 3:
-          //Saw
-          drawIntImage(sawIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 8, 2);
-          break;
-        case 4:
-          //Sine
-          drawIntImage(sineIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 8, 2);
-          break;
-        case 5:
-          //Pulse
-          drawIntImage(pulseIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 8, 2);
-          break;
-        default:
-          //None
-          drawIntImage(noneIcon, 12, 12, pal[pal.length - 2], GetLeft() + 24 + 9 * 34, (res_y * scale) + 8, 2);
-          break;
-      }
-    }
-    else if (Insects[selectedInsect].soundType == 1)
-    {
-      //MIDI
-      textSize(12);
-      noFill();
-      stroke(pal[pal.length - 2]);
-      rect(GetLeft() + 20 + 9 * 34, (res_y * scale) + 4, 31, 31);
-      
-      //number
-      noStroke();
-      fill(pal[pal.length - 2]);
-      text(Insects[selectedInsect].soundInst, GetLeft() + 26 + 9 * 34, (res_y * scale) + 24);
-      
-      //instrument name
-      text(GeneralMIDI[Insects[selectedInsect].soundInst], GetLeft() + 28 + 10 * 34, (res_y * scale) + 24);
-    }
+    //instrument name
+    text(GeneralMIDI[Insects[selectedInsect].soundInst], GetLeft() + 28 + 10 * 34, (res_y * scale) + 64);
   }
   strokeWeight(1);
 }
@@ -701,7 +704,11 @@ void MenuInputTUIO()
     {
       if (menuTUIOpage == 0)
       {
-        curcolor_id = ((cursorX - GetLeft()) - 20) / 31;
+        if (((cursorX - GetLeft()) - 20) / 31 <= pal.length && ((cursorX - GetLeft()) - 20) / 31 >= 0)
+        {
+          curcolor_id = ((cursorX - GetLeft()) - 20) / 31;
+        }
+        
         if (curcolor_id < pal.length)
         {
           curcolor = pal[curcolor_id];
@@ -776,88 +783,93 @@ void MenuInputTUIO()
       }
       else if (menuTUIOpage == 2)
       {
-        switch (((cursorX - GetLeft()) - 20) / 34)
-        {
-          case 0:
-            //Select Insect
-            if (mouseButton == LEFT)
-              selectedInsect++;
-            else
-              selectedInsect--;
-            
-            if (selectedInsect >= Insects.length)
-              selectedInsect = 0;
-            else if (selectedInsect < 0)
-              selectedInsect = Insects.length - 1;
-            break;
-          case 2:
-            //Speed 0
-            Insects[selectedInsect].speed = 0;
-            break;
-          case 3:
-            //Speed 0.25
-            Insects[selectedInsect].speed = 0.25;
-            break;
-          case 4:
-            //Speed 0.5
-            Insects[selectedInsect].speed = 0.5;
-            break;
-          case 5:
-            //Speed 0.75
-            Insects[selectedInsect].speed = 0.75;
-            break;
-          case 6:
-            //Speed 1
-            Insects[selectedInsect].speed = 1;
-            break;
-          case 7:
-            //Direction Change
-            Insects[selectedInsect].Turn(D_RIGHT);
-            break;
-          case 8:
-            //Sound Type
-            StopSound(selectedInsect);
-            if (mouseButton == LEFT)
-              Insects[selectedInsect].soundType++;
-            else
-              Insects[selectedInsect].soundType--;
-            
-            if (Insects[selectedInsect].soundType >= 3)
-              Insects[selectedInsect].soundType = 0;
-            else if (Insects[selectedInsect].soundType < 0)
-              Insects[selectedInsect].soundType = 2;
-            
-            if (Insects[selectedInsect].soundType == 2)
-              Insects[selectedInsect].soundNoteID = 1;
-            else
-              Insects[selectedInsect].soundNoteID = 0;
-            break;
-          case 9:
-            //Sound Instrument
-            if (Insects[selectedInsect].soundType < 2)
-            {
-              StopSound(selectedInsect);
-              if (mouseButton == LEFT)
-                Insects[selectedInsect].soundInst++;
-              else
-                Insects[selectedInsect].soundInst--;
-              
-              if (Insects[selectedInsect].soundType == 0 && Insects[selectedInsect].soundInst > 5)
-                Insects[selectedInsect].soundInst = 0;
-              else if (Insects[selectedInsect].soundType == 0 && Insects[selectedInsect].soundInst < 0)
-                Insects[selectedInsect].soundInst = 5;
-              else if (Insects[selectedInsect].soundType == 1 && Insects[selectedInsect].soundInst > 127)
-                Insects[selectedInsect].soundInst = 0;
-              else if (Insects[selectedInsect].soundType == 1 && Insects[selectedInsect].soundInst < 0)
-                Insects[selectedInsect].soundInst = 127;
-            }
-        }
+        
       }
       else if (menuTUIOpage == 3)
       {
         
       }
     }
+  }
+  
+  if (cursorY >= ((res_y * scale) + 44) && cursorY <= (res_y * scale) + 44 + 31)
+  {
+    switch (((cursorX - GetLeft()) - 20) / 34)
+    {
+      case 0:
+        //Select Insect
+        if (mouseButton == LEFT)
+          selectedInsect++;
+        else
+          selectedInsect--;
+        
+        if (selectedInsect >= Insects.length)
+          selectedInsect = 0;
+        else if (selectedInsect < 0)
+          selectedInsect = Insects.length - 1;
+        break;
+      case 2:
+        //Speed 0
+        Insects[selectedInsect].speed = 0;
+        break;
+      case 3:
+        //Speed 0.25
+        Insects[selectedInsect].speed = 0.25;
+        break;
+      case 4:
+        //Speed 0.5
+        Insects[selectedInsect].speed = 0.5;
+        break;
+      case 5:
+        //Speed 0.75
+        Insects[selectedInsect].speed = 0.75;
+        break;
+      case 6:
+        //Speed 1
+        Insects[selectedInsect].speed = 1;
+        break;
+      case 7:
+        //Direction Change
+        Insects[selectedInsect].Turn(D_RIGHT);
+        break;
+      case 8:
+        //Sound Type
+        StopSound(selectedInsect);
+        if (mouseButton == LEFT)
+          Insects[selectedInsect].soundType++;
+        else
+          Insects[selectedInsect].soundType--;
+        
+        if (Insects[selectedInsect].soundType >= 3)
+          Insects[selectedInsect].soundType = 0;
+        else if (Insects[selectedInsect].soundType < 0)
+          Insects[selectedInsect].soundType = 2;
+        
+        if (Insects[selectedInsect].soundType == 2)
+          Insects[selectedInsect].soundNoteID = 1;
+        else
+          Insects[selectedInsect].soundNoteID = 0;
+        break;
+      case 9:
+        //Sound Instrument
+        if (Insects[selectedInsect].soundType < 2)
+        {
+          StopSound(selectedInsect);
+          if (mouseButton == LEFT)
+            Insects[selectedInsect].soundInst++;
+          else
+            Insects[selectedInsect].soundInst--;
+          
+          if (Insects[selectedInsect].soundType == 0 && Insects[selectedInsect].soundInst > 5)
+            Insects[selectedInsect].soundInst = 0;
+          else if (Insects[selectedInsect].soundType == 0 && Insects[selectedInsect].soundInst < 0)
+            Insects[selectedInsect].soundInst = 5;
+          else if (Insects[selectedInsect].soundType == 1 && Insects[selectedInsect].soundInst > 127)
+            Insects[selectedInsect].soundInst = 0;
+          else if (Insects[selectedInsect].soundType == 1 && Insects[selectedInsect].soundInst < 0)
+            Insects[selectedInsect].soundInst = 127;
+        }
+    } 
   }
 }
 
