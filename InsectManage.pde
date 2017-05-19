@@ -222,6 +222,7 @@ void InsectDisplay()
 {
   for (int id = 0; id < Insects.length; id++)
   {
+    strokeWeight(1);
     if (id != selectedInsect)
       noStroke();
     else
@@ -233,6 +234,7 @@ void InsectDisplay()
 
 void InsectDisplay(int id)
 {
+  strokeWeight(1);
   if (id != selectedInsect)
     noStroke();
   else
