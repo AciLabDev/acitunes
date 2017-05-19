@@ -131,6 +131,8 @@ void setup() {
   
   for (int i = 0; i < midi.availableOutputs().length; i++)
     println(midi.availableOutputs()[i]);
+    
+  thread("InsectThread");
 }
 
 // Called every frame
@@ -146,7 +148,7 @@ void draw() {
       for (int i = 0; i < globalspeed; i++)
       {
         BitmapManage();
-        thread("InsectManage"); //Only thing that can use its own thread
+        //thread("InsectManage"); //Only thing that can use its own thread
         InsectDisplay();
         EffectManage();
         SoundManage();
@@ -179,6 +181,30 @@ void draw() {
   for (int i=0;i<tuioCursorList.size();i++) {
     TuioCursor tcur = tuioCursorList.get(i);
     ellipse(tcur.getScreenX(width), tcur.getScreenY(height), 10, 10);
+  }
+}
+
+void InsectThread()
+{
+  final int timing = 20;
+  int curmilli = millis();
+  while (true)
+  {
+    if (millis() >= curmilli + timing)
+    {
+      curmilli = millis();
+      if (mode == 0)
+      {
+        //Regular Mode
+        if (globalspeed > 0)
+        {
+          for (int i = 0; i < globalspeed; i++)
+          {
+            InsectManage();
+          }    
+        }
+      }
+    }
   }
 }
 
