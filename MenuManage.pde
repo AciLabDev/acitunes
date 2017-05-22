@@ -815,7 +815,8 @@ void MenuInputTUIO()
            case 4:
              //Save
              globalspeed = 0;
-             selectInput("Save JSON file", "fileSave");
+             mode = 4;
+             set = 0;
              break;
            case 6:
              //MIDI output setup
@@ -1097,7 +1098,7 @@ int SaveFileListManage(boolean isSave)
 {
   //List Files (same code for both)
   String names[];
-  File file = new File("./");
+  File file = new File("./save/");
   if (file.isDirectory()) {
     names = file.list();
   }
@@ -1144,12 +1145,21 @@ void LoadMenuInput()
     if ((cursorY - 25) / 25 < fileList)
     {
       //Load File selected
+      File file = new File("./save");
+      if (file.isDirectory()) {
+        File[] files = file.listFiles();
+        
+        fileLoad(files[(cursorY - 25) / 25]);
+      }
+      
       mode = 0;
+      globalspeed = 1;
     }
     else if ((cursorY - 25) / 25 == fileList + 2)
     {
       //EXIT Button
       mode = 0;
+      globalspeed = 1;
     }
   }
 }
@@ -1161,17 +1171,26 @@ void SaveMenuInput()
     if ((cursorY - 25) / 25 < fileList)
     {
       //Save File selected
+      File file = new File("./save");
+      if (file.isDirectory()) {
+        File[] files = file.listFiles();
+        
+        fileSave(files[(cursorY - 25) / 25]);
+      }
+      
       mode = 0;
     }
     else if ((cursorY - 25) / 25 == fileList + 1)
     {
       //SAVE NEW FILE Button
       mode = 0;
+      globalspeed = 1;
     }
     else if ((cursorY - 25) / 25 == fileList + 2)
     {
       //EXIT Button
       mode = 0;
+      globalspeed = 1;
     }
   }
 }
