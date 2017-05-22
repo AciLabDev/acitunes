@@ -2,6 +2,7 @@ int menutype = 0; //0 = Mouse, 1 = TUIO
 int menuTUIOpage = 0;
 
 int fileList;
+String filenameSave;
 
 /* Manage */
 void MenuManage()
@@ -1183,7 +1184,8 @@ void SaveMenuInput()
     else if ((cursorY - 25) / 25 == fileList + 1)
     {
       //SAVE NEW FILE Button
-      mode = 0;
+      filenameSave = "";
+      mode = 5;
       globalspeed = 1;
     }
     else if ((cursorY - 25) / 25 == fileList + 2)
@@ -1193,6 +1195,122 @@ void SaveMenuInput()
       globalspeed = 1;
     }
   }
+}
+
+void NameSaveFileManage()
+{
+  //Display Filename
+  stroke(0);
+  strokeWeight(5);
+  fill(80);
+  rect(25, 25, 250, 25);
+  fill(255);
+  text(filenameSave, 32, 42);
+  
+  KeyboardDisplay(25, 50);
+}
+
+void NameSaveFileInput()
+{
+  char check = KeyboardInput(25, 50);
+  if (check == 1)
+  {
+    if (filenameSave.length() - 1 >= 0)
+      filenameSave = filenameSave.substring(0, filenameSave.length() - 1);
+  }
+  else if (check == 2)
+  {
+    File file = new File("./save/" + filenameSave + ".json");
+    fileSave(file);
+    mode = 0;
+    globalspeed = 1;
+  }
+  else if (check == 3)
+  {
+    mode = 4;
+  }
+  else
+  {
+    filenameSave += check;
+  }
+}
+
+/* Virtual Keyboard for TUIO */
+void KeyboardDisplay(int x, int y)
+{
+  //1234567890
+  //AZERTYUIOP
+  //QSDFGHJKLM
+  //WXCVBN
+  
+  String charlist = "1234567890AZERTYUIOPQSDFGHJKLMWXCVBN ";
+  
+  stroke(0);
+  strokeWeight(5);
+  for (int i = 0; i < charlist.length(); i++)
+  {
+    fill(80);
+    rect(x + 25 * (i % 10), y + 25 * (i / 10), 25, 25);
+    fill(255);
+    text(charlist.charAt(i), x + 9 + 25 * (i % 10), y + 17 + 25 * (i / 10));
+  }
+  
+  fill(80);
+  rect(x, y + 25 * ((charlist.length() / 10) + 2), 50, 25);
+  fill(255);
+  text("Back", x + 9, y + 17 + 25 * ((charlist.length() / 10) + 2));
+  
+  fill(80);
+  rect(x + 25 * 4, y + 25 * ((charlist.length() / 10) + 2), 50, 25);
+  fill(255);
+  text("Cancel", x + 5 + 25 * 4, y + 17 + 25 * ((charlist.length() / 10) + 2));
+  
+  fill(80);
+  rect(x + 25 * 8, y + 25 * ((charlist.length() / 10) + 2), 50, 25);
+  fill(255);
+  text("ENTER", x + 25 * 8 + 9, y + 17 + 25 * ((charlist.length() / 10) + 2));
+}
+
+char KeyboardInput(int x, int y)
+{
+  //1234567890
+  //AZERTYUIOP
+  //QSDFGHJKLM
+  //WXCVBN
+  
+  String charlist = "1234567890AZERTYUIOPQSDFGHJKLMWXCVBN ";
+  
+  if (cursorX >= x && cursorX < x + 50
+    && cursorY >= y + 25 * ((charlist.length() / 10) + 2) && cursorY < y + 25 * ((charlist.length() / 10) + 3))
+  {
+    //Backspace
+    return 1;
+  }
+  
+  if (cursorX >= x + 25 * 8 && cursorX < x + 25 * 8 + 50
+    && cursorY >= y + 25 * ((charlist.length() / 10) + 2) && cursorY < y + 25 * ((charlist.length() / 10) + 3))
+  {
+    //ENTER
+    return 2;
+  }
+  
+  if (cursorX >= x + 25 * 4 && cursorX < x + 25 * 4 + 50
+    && cursorY >= y + 25 * ((charlist.length() / 10) + 2) && cursorY < y + 25 * ((charlist.length() / 10) + 3))
+  {
+    //CANCEL
+    return 3;
+  }
+  
+  for (int i = 0; i < charlist.length(); i++)
+  {
+    if (cursorX >= x + 25 * (i % 10) && cursorX < x + 25 * ((i % 10) + 1)
+      && cursorY >= y + 25 * (i / 10) && cursorY < y + 25 * ((i / 10) + 1))
+    {
+      return charlist.charAt(i);
+    }
+  }
+  
+  return 0;
 }
 
 /* Draw Functions */

@@ -27,7 +27,7 @@
 /*
 - New Canvas (set Size manually) [DONE, to be improved]
 - MIDI output select (working, better interface needed)
-- File Load/Save for touch/table screens
+- File Load/Save for touch/table screens [DONE, to be improved]
 
 - New Effects
 - Insect Designs
@@ -204,6 +204,11 @@ void draw() {
     //Save Menu (TUIO)
     fileList = SaveFileListManage(true);
   }
+  else if (mode == 5)
+  {
+    //Name Saved File (TUIO)
+    NameSaveFileManage();
+  }
   
   ArrayList<TuioCursor> tuioCursorList = tuioClient.getTuioCursorList();
   for (int i=0;i<tuioCursorList.size();i++) {
@@ -301,6 +306,10 @@ void mouseReleased() {
   {
     SaveMenuInput();
   }
+  else if (mode == 5)
+  {
+    NameSaveFileInput();
+  }
 }
 
 void mouseDragged() {
@@ -395,6 +404,10 @@ void removeTuioCursor(TuioCursor tcur)
   else if (mode == 4)
   {
     SaveMenuInput();
+  }
+  else if (mode == 5)
+  {
+    NameSaveFileInput();
   }
 }
 
