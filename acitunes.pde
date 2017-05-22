@@ -176,6 +176,11 @@ void draw() {
     //MIDI Output select
     MidiMenuManage();
   }
+  else if (mode == 3)
+  {
+    //Load Menu (TUIO)
+    fileList = SaveFileListManage(false);
+  }
   
   ArrayList<TuioCursor> tuioCursorList = tuioClient.getTuioCursorList();
   for (int i=0;i<tuioCursorList.size();i++) {
@@ -265,6 +270,10 @@ void mouseReleased() {
   {
     MidiMenuInput();
   }
+  else if (mode == 3)
+  {
+    LoadMenuInput();
+  }
 }
 
 void mouseDragged() {
@@ -351,6 +360,10 @@ void removeTuioCursor(TuioCursor tcur)
   else if (mode == 2)
   {
     MidiMenuInput();
+  }
+  else if (mode == 3)
+  {
+    LoadMenuInput();
   }
 }
 

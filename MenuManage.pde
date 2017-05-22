@@ -1,6 +1,8 @@
 int menutype = 0; //0 = Mouse, 1 = TUIO
 int menuTUIOpage = 0;
 
+int fileList;
+
 /* Manage */
 void MenuManage()
 {
@@ -559,6 +561,19 @@ void MenuManageTUIO()
     drawIntImage(blackIcon, 12, 12, #000000, GetLeft() + 24 + 11 * 34, (res_y * scale) + 8, 2);
     drawIntImage(checkerIcon, 12, 12, #000000, GetLeft() + 24 + 12 * 34, (res_y * scale) + 8, 2);
   }
+  else if (menuTUIOpage == 2)
+  {
+    //New, Open and Save
+    drawIntImage(buttonIcon, 16, 16, pal[0], GetLeft() + 20 + 0 * 34, (res_y * scale) + 4, 2);
+    drawIntImage(buttonIcon, 16, 16, pal[0], GetLeft() + 20 + 2 * 34, (res_y * scale) + 4, 2);
+    drawIntImage(buttonIcon, 16, 16, pal[0], GetLeft() + 20 + 4 * 34, (res_y * scale) + 4, 2);
+    drawIntImage(buttonIconCircle, 16, 16, #FFFFFF, GetLeft() + 20 + 6 * 34, (res_y * scale) + 4, 2);
+    
+    drawIntImage(newIcon, 12, 12, pal[0], GetLeft() + 24 + 0 * 34, (res_y * scale) + 8, 2);
+    drawIntImage(loadIcon, 12, 12, pal[0], GetLeft() + 24 + 2 * 34, (res_y * scale) + 8, 2);
+    drawIntImage(saveIcon, 12, 12, pal[0], GetLeft() + 24 + 4 * 34, (res_y * scale) + 8, 2);
+    drawIntImage(midiOutputIcon, 12, 12, #FFFFFF, GetLeft() + 24 + 6 * 34, (res_y * scale) + 8, 2);
+  }
   
   //2nd line - Insect Setting
   drawIntImage(buttonIconCircle, 16, 16, insectColorDefault[selectedInsect & 3], GetLeft() + 20 + 0 * 34, (res_y * scale) + 44, 2);
@@ -783,7 +798,32 @@ void MenuInputTUIO()
       }
       else if (menuTUIOpage == 2)
       {
-        
+        switch (((cursorX - GetLeft()) - 20) / 34)
+        {
+           case 0:
+             //New
+             StopAllSounds();
+             mode = 1;
+             set = 0;
+             break;
+           case 2:
+             //Load
+             globalspeed = 0;
+             mode = 3;
+             set = 0;
+             break;
+           case 4:
+             //Save
+             globalspeed = 0;
+             selectInput("Save JSON file", "fileSave");
+             break;
+           case 6:
+             //MIDI output setup
+             StopAllSounds();
+             mode = 2;
+             set = 0;
+             break;
+        }
       }
       else if (menuTUIOpage == 3)
       {
@@ -1051,7 +1091,92 @@ void CursorManage()
     cursor(drawIntPImage(cursorPick, 16, 16, pal[pal.length - 2], 2), 0, 0);
 }
 
-/* Draw */
+/* TUIO */
+/* Load / Save File List */
+int SaveFileListManage(boolean isSave)
+{
+  //List Files (same code for both)
+  String names[];
+  File file = new File("./");
+  if (file.isDirectory()) {
+    names = file.list();
+  }
+  else {
+    mode = 0;
+    return 0;
+  }
+  
+  //Render the list
+  stroke(0);
+  strokeWeight(5);
+  fill(80);
+  for (int i = 0; i < names.length; i++)
+  {
+    if (names[i].equals(selectedMIDI))
+      fill(128);
+    else
+      fill(80);
+    rect(25, 25 + 25 * i, 250, 25);
+    fill(255);
+    text(names[i], 32, 42 + 25 * i);
+  }
+  
+  if (isSave)
+  {
+    fill(80);
+    rect(25, 25 + 25 * (names.length + 1), 250, 25);
+    fill(255);
+    text("SAVE NEW FILE", 32, 42 + 25 * (names.length + 1));
+  }
+  
+  fill(80);
+  rect(25, 25 + 25 * (names.length + 2), 250, 25);
+  fill(255);
+  text("EXIT", 32, 42 + 25 * (names.length + 2));
+  
+  return names.length;
+}
+
+void LoadMenuInput()
+{
+  if (cursorX >= 25 && cursorX <= 250 && cursorY >= 25 && cursorY < 25 + 25 * (fileList + 3))
+  {
+    if ((cursorY - 25) / 25 < fileList)
+    {
+      //Load File selected
+      mode = 0;
+    }
+    else if ((cursorY - 25) / 25 == fileList + 2)
+    {
+      //EXIT Button
+      mode = 0;
+    }
+  }
+}
+
+void SaveMenuInput()
+{
+  if (cursorX >= 25 && cursorX <= 250 && cursorY >= 25 && cursorY < 25 + 25 * (fileList + 3))
+  {
+    if ((cursorY - 25) / 25 < fileList)
+    {
+      //Save File selected
+      mode = 0;
+    }
+    else if ((cursorY - 25) / 25 == fileList + 1)
+    {
+      //SAVE NEW FILE Button
+      mode = 0;
+    }
+    else if ((cursorY - 25) / 25 == fileList + 2)
+    {
+      //EXIT Button
+      mode = 0;
+    }
+  }
+}
+
+/* Draw Functions */
 void drawIntImage(int[] imgdat, int _width, int _height, color col, float x, float y, float scale)
 {
   PImage img = createImage(_width, _height, ARGB);
