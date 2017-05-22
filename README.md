@@ -4,7 +4,7 @@ Music Insects reimplementation / Original concept by Toshio Iwai
 Developed by AciLab for Processing
 
 Libraries (not included) used:
-- Processing-Sound
+- Minim
 - The MidiBus
 
 Font used:
