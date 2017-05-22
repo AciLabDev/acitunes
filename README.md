@@ -6,6 +6,7 @@ Developed by AciLab for Processing
 Libraries (not included) used:
 - Minim
 - The MidiBus
+- TUIO
 
 Font used:
 - Code New Roman (https://fontlibrary.org/en/font/code-new-roman)
