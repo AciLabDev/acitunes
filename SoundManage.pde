@@ -97,6 +97,57 @@ float[] notefreq = {
   1047.0,
 };
 
+class SampleInstrument implements Instrument
+{
+  Sampler wave;
+  float freq;
+  float origFreq;
+  float origRate;
+  
+  SampleInstrument( Sampler sample, float origfrequency )
+  {
+    wave = sample;
+    origFreq = origfrequency;
+    
+    wave.patch(out);
+    origRate = wave.sampleRate();
+  }
+  
+  void sampleChange( Sampler sample, float origfrequency )
+  {
+    wave.unpatch(out);
+    
+    wave = sample;
+    origFreq = origfrequency;
+    
+    wave.patch(out);
+    origRate = wave.sampleRate();
+  }
+  
+  void noteChange( float frequency )
+  {
+    freq = frequency;
+    wave.setSampleRate(origRate / (freq / origFreq));
+  }
+  
+  // this is called by the sequencer when this instrument
+  // should start making sound. the duration is expressed in seconds.
+  void noteOn( float duration )
+  {
+    wave.trigger();
+  }
+  
+  // this is called by the sequencer when the instrument should
+  // stop making sound
+  void noteOff()
+  {
+    //Do nothing
+  }
+}
+
+SampleInstrument[] instSample;
+String[] sampleList;
+
 public class SoundChannel {
   public int type;    //0 = Synth, 1 = MIDI, 2 = MIDI Drum
   public int inst;    //Synth: 0 = None, 1 = Square, 2 = Triangle, 3 = Saw, 4 = Sine, 5 = Pulse
@@ -169,6 +220,11 @@ void SoundInit(int nb)
   
   selectedMIDI = "Microsoft GS Wavetable Synth";
   midi = new MidiBus(this, -1, selectedMIDI);  //Windows MIDI by default
+  
+  if (LoadSampleList())
+  {
+    instSample = new SampleInstrument[nb];
+  }
 }
 
 void SoundManage()
@@ -226,6 +282,11 @@ void SoundManage()
           midi.sendNoteOn(9, Sounds[id].note, 127);
         }        
         Sounds[id].curframe++;
+      }
+      else if (Sounds[id].type == 3)
+      {
+        playNoteSample(Sounds[id].note, instSample[id]);
+        Sounds[id].Reset();
       }
     }
   }
@@ -299,4 +360,33 @@ void StopAllSounds()
 // This function calculates the respective frequency of a MIDI note
 float midiToFreq(int note) {
   return (pow(2, ((note-69)/12.0)))*440;
+}
+
+//Sample related Functions
+boolean LoadSampleList()
+{
+  sampleList = loadStrings(sketchPath("/sample/list.txt"));
+  if (sampleList != null && sampleList.length >= 2 && ((sampleList.length & 1) == 0))
+  {
+    //If a multiple of 2 lines then it's good (but not 0)
+    
+    /*
+      File Format: Regular txt file, 2 lines per sample:
+      - sample filename
+      - base note
+      and goes on
+    */
+    return true;
+  }
+  else
+  {
+    sampleList = null;
+    return false;
+  }
+}
+
+void playNoteSample(float _note, SampleInstrument _inst)
+{
+  _inst.noteChange(Frequency.ofMidiNote( _note ).asHz());
+  out.playNote(0, 1, _inst);
 }

@@ -234,6 +234,22 @@ void MenuManageMouse()
     //instrument name
     text(GeneralMIDI[Insects[selectedInsect].soundInst], GetLeft() + 28 + 10 * 20, (res_y * scale) + 83);
   }
+  else if (Insects[selectedInsect].soundType == 3)
+  {
+    //Samples
+    textSize(12);
+    noFill();
+    stroke(pal[pal.length - 2]);
+    rect(GetLeft() + 20 + 9 * 20, (res_y * scale) + 70, 24, 15);
+    
+    //number
+    noStroke();
+    fill(pal[pal.length - 2]);
+    text(Insects[selectedInsect].soundInst, GetLeft() + 22 + 9 * 20, (res_y * scale) + 83);
+    
+    //instrument name
+    text(sampleList[Insects[selectedInsect].soundInst * 2], GetLeft() + 28 + 10 * 20, (res_y * scale) + 83);
+  }
 }
 
 void MenuInputMouse()
@@ -373,15 +389,26 @@ void MenuInputMouse()
         else
           Insects[selectedInsect].soundType--;
         
-        if (Insects[selectedInsect].soundType >= 3)
+        int sampleCheck = 1;
+        if (sampleList == null)
+          sampleCheck = 0;
+        
+        if (Insects[selectedInsect].soundType > (2 + sampleCheck))
           Insects[selectedInsect].soundType = 0;
         else if (Insects[selectedInsect].soundType < 0)
-          Insects[selectedInsect].soundType = 2;
+          Insects[selectedInsect].soundType = 2 + sampleCheck;
         
         if (Insects[selectedInsect].soundType == 2)
           Insects[selectedInsect].soundNoteID = 1;
         else
           Insects[selectedInsect].soundNoteID = 0;
+          
+        if (Insects[selectedInsect].soundType == 3)
+        {
+          if (Insects[selectedInsect].soundInst > (sampleList.length / 2))
+            Insects[selectedInsect].soundInst = 0;
+          instSample[selectedInsect] = new SampleInstrument(new Sampler(sketchPath("sample/" + sampleList[Insects[selectedInsect].soundInst * 2]), 2, minim), Frequency.ofPitch( sampleList[(Insects[selectedInsect].soundInst * 2) + 1] ).asHz());
+        }
         break;
       case 9:
         //Sound Instrument
@@ -401,6 +428,21 @@ void MenuInputMouse()
             Insects[selectedInsect].soundInst = 0;
           else if (Insects[selectedInsect].soundType == 1 && Insects[selectedInsect].soundInst < 0)
             Insects[selectedInsect].soundInst = 127;
+        }
+        else if (Insects[selectedInsect].soundType == 3)
+        {
+          StopSound(selectedInsect);
+          if (mouseButton == LEFT)
+            Insects[selectedInsect].soundInst++;
+          else
+            Insects[selectedInsect].soundInst--;
+            
+          if (Insects[selectedInsect].soundInst >= (sampleList.length / 2))
+            Insects[selectedInsect].soundInst = 0;
+          else if (Insects[selectedInsect].soundInst < 0)
+            Insects[selectedInsect].soundInst = (sampleList.length / 2) - 1;
+            
+          instSample[selectedInsect] = new SampleInstrument(new Sampler(sketchPath("sample/" + sampleList[Insects[selectedInsect].soundInst * 2]), 2, minim), Frequency.ofPitch( sampleList[(Insects[selectedInsect].soundInst * 2) + 1] ).asHz());
         }
     }
   }
@@ -702,6 +744,23 @@ void MenuManageTUIO()
     //instrument name
     text(GeneralMIDI[Insects[selectedInsect].soundInst], GetLeft() + 28 + 10 * 34, (res_y * scale) + 64);
   }
+  else if (Insects[selectedInsect].soundType == 3)
+  {
+    //MIDI
+    textSize(12);
+    noFill();
+    stroke(pal[pal.length - 2]);
+    rect(GetLeft() + 20 + 9 * 34, (res_y * scale) + 44, 31, 31);
+    
+    //number
+    noStroke();
+    fill(pal[pal.length - 2]);
+    text(Insects[selectedInsect].soundInst, GetLeft() + 26 + 9 * 34, (res_y * scale) + 64);
+    
+    //instrument name
+    text(sampleList[Insects[selectedInsect].soundInst * 2], GetLeft() + 28 + 10 * 34, (res_y * scale) + 64);
+  }
+  
   strokeWeight(1);
 }
 
@@ -840,10 +899,7 @@ void MenuInputTUIO()
     {
       case 0:
         //Select Insect
-        if (mouseButton == LEFT)
-          selectedInsect++;
-        else
-          selectedInsect--;
+        selectedInsect++;
         
         if (selectedInsect >= Insects.length)
           selectedInsect = 0;
@@ -877,20 +933,24 @@ void MenuInputTUIO()
       case 8:
         //Sound Type
         StopSound(selectedInsect);
-        if (mouseButton == LEFT)
-          Insects[selectedInsect].soundType++;
-        else
-          Insects[selectedInsect].soundType--;
+        Insects[selectedInsect].soundType++;
         
-        if (Insects[selectedInsect].soundType >= 3)
+        int sampleCheck = 1;
+        if (sampleList == null)
+          sampleCheck = 0;
+        
+        if (Insects[selectedInsect].soundType > (2 + sampleCheck))
           Insects[selectedInsect].soundType = 0;
         else if (Insects[selectedInsect].soundType < 0)
-          Insects[selectedInsect].soundType = 2;
+          Insects[selectedInsect].soundType = 2 + sampleCheck;
         
         if (Insects[selectedInsect].soundType == 2)
           Insects[selectedInsect].soundNoteID = 1;
         else
           Insects[selectedInsect].soundNoteID = 0;
+          
+        if (Insects[selectedInsect].soundType == 3 && Insects[selectedInsect].soundInst > (sampleList.length / 2))
+          Insects[selectedInsect].soundInst = 0;
         break;
       case 9:
         //Sound Instrument
@@ -910,6 +970,16 @@ void MenuInputTUIO()
             Insects[selectedInsect].soundInst = 0;
           else if (Insects[selectedInsect].soundType == 1 && Insects[selectedInsect].soundInst < 0)
             Insects[selectedInsect].soundInst = 127;
+        }
+        else if (Insects[selectedInsect].soundType == 3)
+        {
+          StopSound(selectedInsect);
+          Insects[selectedInsect].soundInst++;
+            
+          if (Insects[selectedInsect].soundInst >= (sampleList.length / 2))
+            Insects[selectedInsect].soundInst = 0;
+          else if (Insects[selectedInsect].soundInst < 0)
+            Insects[selectedInsect].soundInst = (sampleList.length / 2) - 1;
         }
     } 
   }
@@ -1099,7 +1169,7 @@ int SaveFileListManage(boolean isSave)
 {
   //List Files (same code for both)
   String names[];
-  File file = new File("./save/");
+  File file = sketchFile("save");
   if (file.isDirectory()) {
     names = file.list();
   }
@@ -1146,7 +1216,7 @@ void LoadMenuInput()
     if ((cursorY - 25) / 25 < fileList)
     {
       //Load File selected
-      File file = new File("./save");
+      File file = sketchFile("save");
       if (file.isDirectory()) {
         File[] files = file.listFiles();
         
@@ -1172,7 +1242,7 @@ void SaveMenuInput()
     if ((cursorY - 25) / 25 < fileList)
     {
       //Save File selected
-      File file = new File("./save");
+      File file = sketchFile("save");
       if (file.isDirectory()) {
         File[] files = file.listFiles();
         
@@ -1220,7 +1290,7 @@ void NameSaveFileInput()
   }
   else if (check == 2)
   {
-    File file = new File("./save/" + filenameSave + ".json");
+    File file = sketchFile("save/" + filenameSave + ".json");
     fileSave(file);
     mode = 0;
     globalspeed = 1;
